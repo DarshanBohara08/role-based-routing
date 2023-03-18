@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { Redirect, useRouteMatch } from "react-router";
+import "./App.css";
+import { PrivateRouteConfig } from "./config/PrivateRouteConfig";
+import { Navbar } from "./Navbar";
+import MapAllowedRoutes from "./routeConfig/MapAllowedRoutes";
+import { FilterRoute } from "./utils/filterRoute";
 
+/**
+ *
+ * @returns JSX Element
+ */
 function App() {
+  const isLoggedIn = true;
+  const url = useRouteMatch("/");
+  let allowedRoutes = [];
+  if (isLoggedIn) {
+    allowedRoutes = FilterRoute(PrivateRouteConfig);
+  } else {
+    return <Redirect to="/" />;
+  }
+  console.log("allowedRoutes", allowedRoutes);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar routes={allowedRoutes} path={url} />
+      <MapAllowedRoutes routes={allowedRoutes} basePath="/" isAddNotFound />
+    </>
   );
 }
 
